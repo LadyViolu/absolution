@@ -4,6 +4,7 @@ import agency.highlysuspect.absolution.ClientInit;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
@@ -39,14 +40,16 @@ public class InGameHudMixin {
 	@Inject(
 		method = "renderCrosshair",
 		at = @At("RETURN")
-	)
+	) 
 	private void crosshairPost(MatrixStack matrices, CallbackInfo ci) {
 		RenderSystem.popMatrix();
+		if (!ClientInit.ENABLE_CIRCLE || Screen.hasAltDown()) return;
 		//(if i ever bind a texture, remember to bind it back for bossbars btw)
 		
 		//Draw the circle while we're at it. Blend mode's already set up
 		//TODO: Narrator: The blend mode was not already set up (try f1, f3, f5)
 		//TODO it doesn't honor the scaledPixels setting yet either
+		
 		RenderSystem.disableTexture();
 		RenderSystem.pushMatrix();
 		RenderSystem.translated(scaledWidth / 2d, scaledHeight / 2d, 0);
